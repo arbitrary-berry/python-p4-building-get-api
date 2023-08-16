@@ -20,6 +20,8 @@ class Game(db.Model):
 
     reviews = db.relationship('Review', backref='game')
 
+    serlialize_rules = ('-reviews.game',)
+
     def __repr__(self):
         return f'<Game {self.title} for {self.platform}>'
 
@@ -35,6 +37,8 @@ class Review(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    serialize_rules = ('-game.reviews', '-user.reviews',)
+
     def __repr__(self):
         return f'<Review ({self.id}) of {self.game}: {self.score}/10>'
 
@@ -47,4 +51,5 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
+    serialize_rules = ('reviews.user',)
     reviews = db.relationship('Review', backref='user')
